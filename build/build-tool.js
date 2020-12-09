@@ -191,7 +191,6 @@ class BuildTool {
       join(srcPath, '**/*.{ejs,json}')
     ])
       .on('all', (e, p) => {
-        console.log(p)
         if (!isEnabled()) return
 
         if(p.endsWith('tailwind.config.js')) {
