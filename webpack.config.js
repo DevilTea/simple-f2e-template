@@ -13,8 +13,8 @@ const { publicPath } = require('./project.config')
 
 
 module.exports = async (env) => {
-  const isProduction = env.production
-  const needAnalyzer = env.analyzer
+  const isProduction = !!env.production
+  const needAnalyzer = !!env.analyzer
 
   process.env.PURGE_TAILWINDCSS = isProduction
 

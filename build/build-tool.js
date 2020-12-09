@@ -187,16 +187,10 @@ class BuildTool {
     runQueue()
 
     chokidar.watch([
-      join(__dirname, '../tailwind.config.js'),
       join(srcPath, '**/*.{ejs,json}')
     ])
       .on('all', (e, p) => {
         if (!isEnabled()) return
-
-        if(p.endsWith('tailwind.config.js')) {
-          pushQueue('global')
-          return
-        }
 
         const [type, ...pagePathPartial] = relative(srcPath, p).split('/')
           .filter((s, i, a) => i === 0 || s === 'pages' || a[i - 1] === 'pages')
