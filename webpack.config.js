@@ -8,12 +8,13 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const { ESBuildPlugin, ESBuildMinifyPlugin } = require('esbuild-loader')
 const WebpackMessages = require('webpack-messages');
-const WriteFilePlugin = require('write-file-webpack-plugin');
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
 const { publicPath } = require('./project.config')
 
 
 module.exports = async (env) => {
   const isProduction = env.production
+  const needAnalyzer = env.analyzer
 
   await buildTool.buildAll(true)
 
@@ -71,14 +72,18 @@ module.exports = async (env) => {
       new WebpackMessages({
         onComplete (name, stats) {
           const sec = (stats.endTime - stats.startTime) / 1e3
-          const baseUrl = 'http://' + process.env.devServerUrl + publicPath
-          console.clear()
-          console.log(
-            `Pages:\n\n` +
-            buildTool.pages.map(p => `    ${chalk.blueBright.underline(baseUrl + p + '.html')}`).join('\n') +
-            '\n'
-          )
-          console.log(chalk.green(`Compiled${name} successfully in ${sec}s!`))
+          if (!isProduction) {
+            const baseUrl = 'http://' + process.env.devServerUrl + publicPath
+            console.clear()
+            console.log(
+              `Pages:\n\n` +
+              buildTool.pages.map(p => `    ${chalk.blueBright.underline(baseUrl + p + '.html')}`).join('\n') +
+              '\n'
+            )
+            console.log(chalk.green(`Compiled${name} successfully in ${sec}s!`))
+          } else {
+            console.log(chalk.green(`Built${name} successfully in ${sec}s!`))
+          }
         }
       }),
       ...buildTool.pages.map((page) => {
@@ -88,7 +93,8 @@ module.exports = async (env) => {
           filename: `${page}.html`,
           chunks: ['global', page],
         })
-      })
+      }),
+      ...(needAnalyzer ? [new BundleAnalyzerPlugin()] : [])
     ],
     optimization: {
       moduleIds: 'hashed',
