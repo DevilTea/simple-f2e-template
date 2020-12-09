@@ -16,7 +16,7 @@ module.exports = async (env) => {
   const isProduction = !!env.production
   const needAnalyzer = !!env.analyzer
 
-  process.env.PURGE_TAILWINDCSS = isProduction
+  process.env.NODE_ENV = isProduction ? 'production' : 'development'
 
   await buildTool.buildAll(true)
 
