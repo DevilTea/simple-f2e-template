@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= data.title %></title>
+  <meta name="description" content="<%= data.description %>">
+  </meta>
+</head>
+
+<body class="min-h-screen">
+  <%- include('nav') %>
+  <main id="<%= page %>" class="h-screen pt-12 pb-8 flex flex-col justify-center items-center">
+    <%- partialPageHtml %>
+  </main>
+
+  <%- include('footer') %>
+
+</body>
+
+</html>

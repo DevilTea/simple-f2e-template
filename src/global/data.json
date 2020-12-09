@@ -1,0 +1,21 @@
+{
+  "title": "Simple Multipage Project Template Demo",
+  "description": "A simple multipage project template demo",
+  "navItems": [
+    {
+      "page": "index",
+      "text": "Home",
+      "href": "index.html"
+    },
+    {
+      "page": "example",
+      "text": "Example",
+      "href": "example.html"
+    },
+    {
+      "page": "example/inner",
+      "text": "Example / Inner",
+      "href": "example/inner.html"
+    }
+  ]
+}

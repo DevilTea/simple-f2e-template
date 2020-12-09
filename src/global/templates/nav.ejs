@@ -1,0 +1,21 @@
+<nav id="nav" class="w-full h-12 absolute top-0 left-0 bg-white shadow">
+  <ul class="h-full flex">
+    <% data.navItems.forEach((item) => { %>
+    <li class="h-full">
+      <a class="
+        h-full 
+        px-4 
+        flex 
+        justify-center 
+        items-center  
+        hover:bg-gray-200
+        font-thin 
+        text-lg
+        <%= page === item.page ? 'bg-gray-400' : '' %>
+        <%= page === item.page ? 'text-white' : 'text-gray-500' %>
+        transition-colors
+        " href="<%= item.href %>"><%= item.text %></a>
+    </li>
+    <% }) %>
+  </ul>
+</nav>
