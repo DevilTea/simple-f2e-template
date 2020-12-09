@@ -1,9 +1,8 @@
 const fs = require('fs')
-const path = require('path')
 const prompts = require('prompts');
 const copydir = require('copy-dir')
 const chalk = require('chalk')
-const { pagesPath, readFileSync, readDirSync, tryMakeDirSync } = require("../utils")
+const { pagesPath, readFileSync, readDirSync, tryMakeDirSync, join } = require("../utils")
 
 async function createNewPage () {
   console.clear()
@@ -31,7 +30,7 @@ async function createNewPage () {
     return
   }
 
-  const newPagePath = path.join(pagesPath, splitted.join('/pages/'))
+  const newPagePath = join(pagesPath, splitted.join('/pages/'))
   tryMakeDirSync(newPagePath)
 
   if (readDirSync(newPagePath).length > 0) {
@@ -39,10 +38,10 @@ async function createNewPage () {
     return
   }
 
-  copydir.sync(path.join(__dirname, '../structureTemplate'), newPagePath)
-  const scssPath = path.join(newPagePath, './scss/index.scss')
+  copydir.sync(join(__dirname, '../structureTemplate'), newPagePath)
+  const scssPath = join(newPagePath, './scss/index.scss')
   fs.writeFileSync(scssPath, readFileSync(scssPath).replace('%PAGE%', page.split('/').slice(-1)[0]))
-  const ejsPath = path.join(newPagePath, './templates/index.ejs')
+  const ejsPath = join(newPagePath, './templates/index.ejs')
   fs.writeFileSync(ejsPath, readFileSync(ejsPath).replace('%PAGE%', page.split('/').slice(-1)[0]))
   console.log(`New page '${page}' created`)
 }

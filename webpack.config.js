@@ -1,7 +1,7 @@
-const path = require('path')
+const { normalize } = require('path')
 const chalk = require('chalk')
 const buildTool = require('./build/build-tool')
-const { tempPath, distPath, srcPath, pageNameToPath } = require('./build/utils')
+const { tempPath, distPath, srcPath, pageNameToPath, join } = require('./build/utils')
 const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 const CopyPlugin = require('copy-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
@@ -16,6 +16,8 @@ module.exports = async (env) => {
   const isProduction = env.production
   const needAnalyzer = env.analyzer
 
+  process.env.PURGE_TAILWINDCSS = isProduction
+
   await buildTool.buildAll(true)
 
   return {
@@ -24,7 +26,7 @@ module.exports = async (env) => {
     entry: () => buildTool.getWebpackEntries(),
     output: {
       filename: `[name].[${isProduction ? 'contenthash' : 'hash'}].js`,
-      path: distPath,
+      path: normalize(distPath),
       publicPath
     },
     module: {
@@ -57,12 +59,12 @@ module.exports = async (env) => {
       new CleanWebpackPlugin(),
       new CopyPlugin([
         {
-          context: path.join(srcPath, 'global/'),
+          context: join(srcPath, 'global/'),
           from: 'public',
           ignore: ['.*']
         },
         ...buildTool.pages.map(page => ({
-          context: path.join(srcPath, `pages/${pageNameToPath(page)}/`),
+          context: join(srcPath, `pages/${pageNameToPath(page)}/`),
           from: 'public',
           ignore: ['.*']
         }))
@@ -89,7 +91,7 @@ module.exports = async (env) => {
       ...buildTool.pages.map((page) => {
         return new HtmlWebpackPlugin({
           base: publicPath,
-          template: path.join(tempPath, `${page}.html`),
+          template: join(tempPath, `${page}.html`),
           filename: `${page}.html`,
           chunks: ['global', page],
         })
@@ -118,15 +120,13 @@ module.exports = async (env) => {
     devServer: isProduction ? undefined : {
       publicPath,
       contentBase: [
-        tempPath,
-        path.join(srcPath, 'global/public'),
-        ...buildTool.pages.map(page => path.join(srcPath, `pages/${pageNameToPath(page)}/public`))
+        normalize(tempPath),
+        normalize(join(srcPath, 'global/public')),
+        ...buildTool.pages.map(page => normalize(join(srcPath, `pages/${pageNameToPath(page)}/public`)))
       ],
       watchContentBase: true,
       hot: true,
       host: 'localhost',
-      open: true,
-      openPage: publicPath.replace('/', ''),
       noInfo: true,
       overlay: true,
       compress: true,

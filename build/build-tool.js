@@ -1,6 +1,5 @@
 const rm = require('rimraf')
 const fs = require('fs')
-const path = require('path')
 const ejs = require('ejs')
 const chokidar = require('chokidar')
 
@@ -9,6 +8,8 @@ const {
   globalPath,
   pagesPath,
   tempPath,
+  join,
+  relative,
   delay,
   isFile,
   isDirectory,
@@ -24,28 +25,28 @@ const chalk = require('chalk')
 function validateRequiredStructure (target) {
   return [
     isDirectory(target),
-    isDirectory(path.join(target, 'public')),
-    isDirectory(path.join(target, 'scripts')),
-    isFile(path.join(target, 'scripts', 'index.js')),
-    isDirectory(path.join(target, 'scss')),
-    isFile(path.join(target, 'scss', 'index.scss')),
-    isDirectory(path.join(target, 'templates')),
-    isFile(path.join(target, 'templates', 'index.ejs')),
-    isFile(path.join(target, 'data.json')),
+    isDirectory(join(target, 'public')),
+    isDirectory(join(target, 'scripts')),
+    isFile(join(target, 'scripts', 'index.js')),
+    isDirectory(join(target, 'scss')),
+    isFile(join(target, 'scss', 'index.scss')),
+    isDirectory(join(target, 'templates')),
+    isFile(join(target, 'templates', 'index.ejs')),
+    isFile(join(target, 'data.json')),
   ].every((b) => b)
 }
 
 function visitAllValidPages (startPath = pagesPath, url, cb) {
   readDirSync(startPath)
-    .filter((n) => isDirectory(path.join(startPath, n)))
+    .filter((n) => isDirectory(join(startPath, n)))
     .forEach((n) => {
-      const p = path.join(startPath, n)
-      const subUrl = path.join(url, n)
+      const p = join(startPath, n)
+      const subUrl = join(url, n)
       if (validateRequiredStructure(p)) {
         cb(subUrl)
       }
 
-      const subPagesPath = path.join(p, 'pages')
+      const subPagesPath = join(p, 'pages')
       if (isDirectory(subPagesPath)) {
         visitAllValidPages(subPagesPath, subUrl, cb)
       }
@@ -59,11 +60,11 @@ function getValidPages () {
 }
 
 function getGlobalData () {
-  return JSON.parse(readFileSync(path.join(srcPath, './global/data.json')))
+  return JSON.parse(readFileSync(join(srcPath, './global/data.json')))
 }
 
 function getPartialPageData (page) {
-  return JSON.parse(readFileSync(path.join(srcPath, `./pages/${pageNameToPath(page)}/data.json`)))
+  return JSON.parse(readFileSync(join(srcPath, `./pages/${pageNameToPath(page)}/data.json`)))
 }
 
 async function render (page) {
@@ -74,10 +75,10 @@ async function render (page) {
       ...getPartialPageData(page)
     }
 
-    const partialPageTemplatePath = path.join(srcPath, `./pages/${pageNameToPath(page)}/templates/index.ejs`)
+    const partialPageTemplatePath = join(srcPath, `./pages/${pageNameToPath(page)}/templates/index.ejs`)
     const partialPageHtml = await ejs.renderFile(partialPageTemplatePath, { data })
 
-    const globalTemplatePath = path.join(srcPath, `./global/templates/index.ejs`)
+    const globalTemplatePath = join(srcPath, `./global/templates/index.ejs`)
     html = await ejs.renderFile(globalTemplatePath, {
       publicPath,
       page,
@@ -85,7 +86,7 @@ async function render (page) {
       partialPageHtml
     })
   } catch (error) {
-    const errorTemplatePath = path.join(__dirname, './templates/error.ejs')
+    const errorTemplatePath = join(__dirname, './templates/error.ejs')
     html = await ejs.renderFile(errorTemplatePath, { error })
   }
   return html
@@ -94,12 +95,12 @@ async function render (page) {
 function getWebpackEntries (pages) {
   const entries = {}
   entries.global = [
-    path.join(srcPath, 'global/scss/vendors.scss'),
-    path.join(srcPath, 'global/scripts/index.js'),
-    path.join(srcPath, 'global/scss/index.scss'),
+    join(srcPath, 'global/scss/vendors.scss'),
+    join(srcPath, 'global/scripts/index.js'),
+    join(srcPath, 'global/scss/index.scss'),
   ]
   pages.forEach((page) => {
-    entries[page] = [path.join(srcPath, `pages/${pageNameToPath(page)}/scripts/index.js`), path.join(srcPath, `pages/${pageNameToPath(page)}/scss/index.scss`)]
+    entries[page] = [join(srcPath, `pages/${pageNameToPath(page)}/scripts/index.js`), join(srcPath, `pages/${pageNameToPath(page)}/scss/index.scss`)]
   })
   return entries
 }
@@ -110,10 +111,10 @@ function getBuildFunctions (pages) {
     obj[page] = async () => {
       const tp = page.split('/').slice(0, -1).join('/')
       try {
-        fs.mkdirSync(path.join(tempPath, tp), { recursive: true })
+        fs.mkdirSync(join(tempPath, tp), { recursive: true })
       } catch (err) { }
       const html = await render(page)
-      await fs.promises.writeFile(path.join(tempPath, `${page}.html`), html)
+      await fs.promises.writeFile(join(tempPath, `${page}.html`), html)
     }
   })
   return obj
@@ -124,11 +125,6 @@ class BuildTool {
   constructor() {
     this.currentPage = 'index'
     this.pages = getValidPages()
-  }
-
-  get currentPageHtmlTemplate () {
-    const p = path.relative(__dirname, path.join(tempPath, `${this.currentPage}.html`))
-    return require(`!!html-loader!${p}`)
   }
 
   getWebpackEntries () {
@@ -191,12 +187,19 @@ class BuildTool {
     runQueue()
 
     chokidar.watch([
-      path.join(srcPath, '**/*.{ejs,json}')
+      join(__dirname, '../tailwind.config.js'),
+      join(srcPath, '**/*.{ejs,json}')
     ])
       .on('all', (e, p) => {
+        console.log(p)
         if (!isEnabled()) return
 
-        const [type, ...pagePathPartial] = path.relative(srcPath, p).split('/')
+        if(p.endsWith('tailwind.config.js')) {
+          pushQueue('global')
+          return
+        }
+
+        const [type, ...pagePathPartial] = relative(srcPath, p).split('/')
           .filter((s, i, a) => i === 0 || s === 'pages' || a[i - 1] === 'pages')
         const page = pagePathPartial.filter(p => p !== 'pages').join('/')
         if (type === 'global') {

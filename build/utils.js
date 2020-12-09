@@ -1,13 +1,9 @@
 const fs = require('fs')
 const path = require('path')
-const ejs = require('ejs')
+const slash = require('slash')
 
-const srcPath = path.join(__dirname, '../src')
-const globalPath = path.join(srcPath, 'global')
-const pagesPath = path.join(srcPath, 'pages')
-const tempPath = path.join(__dirname, './.temp')
-const distPath = path.join(__dirname, '../dist')
-
+const join = (...paths) => slash(path.join(...paths.map(p => slash(p))))
+const relative = (from, to) => slash(path.relative(slash(from), slash(to)))
 const delay = (ms = 300) => new Promise(res => setTimeout(res, ms))
 const isFile = (p) => fs.existsSync(p) && fs.statSync(p).isFile()
 const isDirectory = (p) => fs.existsSync(p) && fs.statSync(p).isDirectory()
@@ -16,12 +12,20 @@ const readDirSync = (p) => fs.readdirSync(p)
 const tryMakeDirSync = (p) => { try { fs.mkdirSync(p, { recursive: true }) } catch (err) { } }
 const pageNameToPath = (pn) => pn.split('/').join('/pages/')
 
+const srcPath = join(__dirname, '../src')
+const globalPath = join(srcPath, 'global')
+const pagesPath = join(srcPath, 'pages')
+const tempPath = join(__dirname, './.temp')
+const distPath = join(__dirname, '../dist')
+
 module.exports = {
   srcPath,
   globalPath,
   pagesPath,
   tempPath,
   distPath,
+  join,
+  relative,
   delay,
   isFile,
   isDirectory,
