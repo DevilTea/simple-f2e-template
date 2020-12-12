@@ -26,6 +26,19 @@ module.exports = {
       indigo: colors.indigo,
       purple: colors.violet,
       pink: colors.pink,
+      main: {
+        'cadet-blue':'#4e699b', //背景顏色
+        'faded-blue':'#7196cc', //導覽列顏色
+        'light-blue-grey':'#bed1eb', //淺藍色
+        'title-blue':'#042156', //底下細字小標題
+        'black-blue':'#2b3a56', //遊戲模式分類-未選取底色
+        'gray-blue':'#6f88b3', //寵物-介紹背景顏色
+        'gloves-blue':'#aebcd7', //等級-手套背景顏色
+        'greyish-brown':'#575757', //黑色塊區域背景&可塗裝&基礎&深灰色的字
+        'pinky-purple':'#bf54cb',  //史詩級&高級
+        'orange-yellow':'#fca000', //傳說級
+        'rare-blue':'#4b9ff7', //稀有&進階
+      }
     },
     spacing: {
       px: '1px',
