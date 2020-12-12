@@ -29,6 +29,7 @@ module.exports = {
       main: {
         'cadet-blue':'#4e699b', //背景顏色
         'faded-blue':'#7196cc', //導覽列顏色
+        'transparent-white':'rgba(255,255,255,0.2)',
         'light-blue-grey':'#bed1eb', //淺藍色
         'title-blue':'#042156', //底下細字小標題
         'black-blue':'#2b3a56', //遊戲模式分類-未選取底色
@@ -176,6 +177,7 @@ module.exports = {
     },
     fontFamily: {
       sans: [
+        '"Noto Sans TC"',
         'ui-sans-serif',
         'system-ui',
         '-apple-system',
