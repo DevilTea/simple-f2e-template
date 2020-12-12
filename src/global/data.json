@@ -1,21 +1,46 @@
 {
-  "title": "Simple Multipage Project Template Demo",
-  "description": "A simple multipage project template demo",
+  "title": "跑跑卡丁車 | 感動資訊網",
+  "description": "",
   "navItems": [
     {
       "page": "index",
-      "text": "Home",
+      "text": "HOME",
       "href": "index.html"
     },
     {
-      "page": "example",
-      "text": "Example",
-      "href": "example.html"
+      "page": "characters",
+      "text": "人物",
+      "href": "characters.html"
     },
     {
-      "page": "example/inner",
-      "text": "Example / Inner",
-      "href": "example/inner.html"
+      "page": "cars",
+      "text": "基本車款",
+      "href": "cars.html"
+    },
+    {
+      "page": "gamemodes",
+      "text": "遊戲模式",
+      "href": "gamemodes.html"
+    },
+    {
+      "page": "techniques",
+      "text": "賽車技巧",
+      "href": "techniques.html"
+    },
+    {
+      "page": "level",
+      "text": "等級/駕照",
+      "href": "level.html"
+    },
+    {
+      "page": "maps",
+      "text": "地圖",
+      "href": "maps.html"
+    },
+    {
+      "page": "home-system",
+      "text": "小屋系統",
+      "href": "home-system.html"
     }
   ]
 }

@@ -1,20 +1,22 @@
-<nav id="nav" class="w-full h-12 absolute top-0 left-0 bg-white shadow">
-  <ul class="h-full flex">
+<nav
+  id="nav"
+  class="w-full fixed top-0 left-0 bg-main-faded-blue text-white text-xl font-thin"
+>
+  <ul class="h-14 flex justify-center">
+    <li class="mr-32 h-full flex items-center">
+      <a href="index.html"><img class="h-8" src="images/logo.png" /></a>
+    </li>
     <% data.navItems.forEach((item) => { %>
     <li class="h-full">
-      <a class="
-        h-full 
-        px-4 
-        flex 
-        justify-center 
-        items-center  
-        hover:bg-gray-200
-        font-thin 
-        text-lg
-        <%= page === item.page ? 'bg-gray-400' : '' %>
-        <%= page === item.page ? 'text-white' : 'text-gray-500' %>
-        transition-colors
-        " href="<%= item.href %>"><%= item.text %></a>
+      <a class="h-full px-4 flex items-center hover:bg-main-transparent-white transition-colors" href="<%= item.href %>">
+        <span class="relative"><%= item.text %>
+        <% if (page === item.page) { %>
+        <div class="absolute -bottom-1 left-0 w-full">
+          <div class="h-0.5 bg-white"></div>
+        </div>
+        <% } %>
+      </span>
+      </a>
     </li>
     <% }) %>
   </ul>
