@@ -1,1 +1,10 @@
-body {}
+body {
+}
+
+.text-stroke {
+  $psize: var(--stroke-width, 1px);
+  $nsize: calc(-1 * var(--stroke-width, 1px));
+  $color: var(--stroke-color, #000);
+  text-shadow: $nsize $nsize 0$color, $psize $nsize 0 $color, $nsize $psize 0 $color,
+    $psize $psize 0 $color;
+}
