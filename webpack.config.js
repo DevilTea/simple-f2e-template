@@ -48,7 +48,12 @@ module.exports = async (env) => {
           use: [
             MiniCssExtractPlugin.loader,
             'cache-loader',
-            'fast-css-loader',
+            {
+              loader: 'fast-css-loader',
+              options: {
+                url: false
+              }
+            },
             'postcss-loader',
             'sass-loader'
           ]
