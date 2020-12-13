@@ -1,23 +1,77 @@
-<nav
-  id="nav"
-  class="w-full fixed top-0 left-0 bg-main-faded-blue text-white text-xl font-thin"
->
-  <ul class="h-14 flex justify-center">
-    <li class="mr-32 h-full flex items-center">
+<nav id="nav" class="w-full fixed top-0 left-0 z-50" x-data="{ open: false }">
+  <ul
+    class="hidden sm:flex flex-wrap justify-center px-14 xl:p-0 bg-main-faded-blue text-white text-xl font-thin"
+  >
+    <li class="w-full xl:w-auto xl:mr-32 h-14 flex justify-center items-center">
       <a href="index.html"><img class="h-8" src="images/logo.png" /></a>
     </li>
     <% data.navItems.forEach((item) => { %>
-    <li class="h-full">
-      <a class="h-full px-4 flex items-center hover:bg-main-transparent-white transition-colors" href="<%= item.href %>">
-        <span class="relative"><%= item.text %>
-        <% if (page === item.page) { %>
-        <div class="absolute -bottom-1 left-0 w-full">
-          <div class="h-0.5 bg-white"></div>
-        </div>
-        <% } %>
-      </span>
+    <li class="w-1/4 xl:w-auto h-14">
+      <a
+        class="h-full px-4 flex justify-center items-center hover:bg-main-transparent-white transition-colors"
+        href="<%= item.href %>"
+      >
+        <span class="relative"
+          ><%= item.text %> <% if (page === item.page) { %>
+          <div class="absolute -bottom-1 left-0 w-full">
+            <div class="h-0.5 bg-white"></div>
+          </div>
+          <% } %>
+        </span>
       </a>
     </li>
     <% }) %>
   </ul>
+  <div
+    class="w-screen h-screen fixed sm:hidden transition-colors duration-1000"
+    x-bind:class="{ 
+      'bg-main-transparent-black': open,
+      'bg-transparent': !open
+    }"
+  ></div>
+  <div class="relative sm:hidden">
+    <div
+      class="relative h-14 flex justify-center items-center bg-main-faded-blue z-10"
+    >
+      <span
+        class="mdi mdi-menu text-4xl text-white absolute top-auto bottom-auto left-4 cursor-pointer"
+        x-on:click="open = !open"
+      ></span>
+      <a href="index.html"><img class="h-8" src="images/logo.png" /></a>
+    </div>
+
+    <div
+      class="absolute left-0 right-0 text-main-cadet-blue transition-all ease-in-out duration-300"
+      x-bind:style="`top: ${open ? '100%' : '-100vh'}`"
+    >
+      <div class="relative">
+        <div
+          style="width: min(200%, 800px); padding-top: min(200%, 800px)"
+          class="w-full bg-white rounded-full absolute -top-12 left-1/2 transform -translate-x-1/2 -translate-y-1/2 shadow-2xl"
+        >
+          <div class="relative">
+            <img class="w-auto h-12 absolute left-1/2 bottom-12 transform -translate-x-1/2" src="images/nexon.png">
+          </div>
+        </div>
+        <ul class="flex flex-wrap justify-center text-xl font-thin">
+          <% data.navItems.forEach((item) => { %>
+          <li class="w-1/2 h-14">
+            <a
+              class="h-full px-4 flex justify-center items-center hover:bg-main-transparent-black transition-colors"
+              href="<%= item.href %>"
+            >
+              <span class="relative"
+                ><%= item.text %> <% if (page === item.page) { %>
+                <div class="absolute -bottom-1 left-0 w-full">
+                  <div class="h-0.5 bg-main-cadet-blue"></div>
+                </div>
+                <% } %>
+              </span>
+            </a>
+          </li>
+          <% }) %>
+        </ul>
+      </div>
+    </div>
+  </div>
 </nav>
