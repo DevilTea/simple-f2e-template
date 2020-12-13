@@ -34,7 +34,7 @@ module.exports = async (env) => {
         {
           test: /\.js$/,
           use: [
-            'cache-loader',
+            ...(isProduction?[]:['cache-loader']),
             {
               loader: 'esbuild-loader',
               options: {
@@ -47,7 +47,7 @@ module.exports = async (env) => {
           test: /\.s[ac]ss$/i,
           use: [
             MiniCssExtractPlugin.loader,
-            'cache-loader',
+            ...(isProduction?[]:['cache-loader']),
             {
               loader: 'fast-css-loader',
               options: {
